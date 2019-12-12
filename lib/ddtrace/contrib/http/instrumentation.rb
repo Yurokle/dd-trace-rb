@@ -2,6 +2,7 @@ require 'uri'
 require 'ddtrace/pin'
 require 'ddtrace/ext/app_types'
 require 'ddtrace/ext/http'
+require 'ddtrace/ext/integration'
 require 'ddtrace/ext/net'
 require 'ddtrace/ext/distributed'
 require 'ddtrace/contrib/analytics'
@@ -39,6 +40,7 @@ module Datadog
             pin.tracer.trace(Ext::SPAN_REQUEST) do |span|
               begin
                 span.service = pin.service
+                span.set_tag(Datadog::Ext::Integration::TAG_PEER_SERVICE, span.service)
                 span.span_type = Datadog::Ext::HTTP::TYPE_OUTBOUND
                 span.resource = req.method
 

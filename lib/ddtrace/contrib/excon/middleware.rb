@@ -1,5 +1,6 @@
 require 'excon'
 require 'ddtrace/ext/http'
+require 'ddtrace/ext/integration'
 require 'ddtrace/ext/net'
 require 'ddtrace/ext/distributed'
 require 'ddtrace/propagation/http_propagator'
@@ -106,6 +107,7 @@ module Datadog
         def annotate!(span, datum)
           span.resource = datum[:method].to_s.upcase
           span.service = service_name(datum)
+          span.set_tag(Datadog::Ext::Integration::TAG_PEER_SERVICE, span.service)
           span.span_type = Datadog::Ext::HTTP::TYPE_OUTBOUND
 
           # Set analytics sample rate

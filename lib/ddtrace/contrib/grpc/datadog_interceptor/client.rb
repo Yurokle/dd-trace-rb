@@ -17,6 +17,7 @@ module Datadog
             options = {
               span_type: Datadog::Ext::HTTP::TYPE_OUTBOUND,
               service: service_name,
+              peer_service: service_name,
               resource: format_resource(keywords[:method])
             }
 

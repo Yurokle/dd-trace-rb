@@ -1,4 +1,5 @@
 require 'ddtrace/ext/app_types'
+require 'ddtrace/ext/integration'
 require 'ddtrace/ext/net'
 require 'ddtrace/ext/sql'
 require 'ddtrace/contrib/analytics'
@@ -19,6 +20,7 @@ module Datadog
             datadog_pin.tracer.trace(Ext::SPAN_QUERY) do |span|
               span.resource = sql
               span.service = datadog_pin.service
+              span.set_tag(Datadog::Ext::Integration::TAG_PEER_SERVICE, span.service)
               span.span_type = Datadog::Ext::SQL::TYPE
 
               # Set analytics sample rate

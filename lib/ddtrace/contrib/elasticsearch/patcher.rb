@@ -1,5 +1,6 @@
 require 'ddtrace/contrib/patcher'
 require 'ddtrace/ext/app_types'
+require 'ddtrace/ext/integration'
 require 'ddtrace/ext/net'
 require 'ddtrace/contrib/analytics'
 require 'ddtrace/contrib/elasticsearch/ext'
@@ -72,6 +73,7 @@ module Datadog
                   port = connection.host[:port] if connection
 
                   span.service = pin.service
+                  span.set_tag(Datadog::Ext::Integration::TAG_PEER_SERVICE, span.service)
                   span.span_type = Datadog::Contrib::Elasticsearch::Ext::SPAN_TYPE_QUERY
 
                   # load JSON for the following fields unless they're already strings

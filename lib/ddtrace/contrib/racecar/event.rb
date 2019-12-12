@@ -1,6 +1,7 @@
 require 'ddtrace/contrib/analytics'
 require 'ddtrace/contrib/active_support/notifications/event'
 require 'ddtrace/contrib/racecar/ext'
+require 'ddtrace/ext/integration'
 
 module Datadog
   module Contrib
@@ -22,7 +23,7 @@ module Datadog
           end
 
           def span_options
-            { service: configuration[:service_name] }
+            { service: configuration[:service_name], peer_service: configuration[:service_name] }
           end
 
           def tracer
@@ -35,6 +36,7 @@ module Datadog
 
           def process(span, event, _id, payload)
             span.service = configuration[:service_name]
+            span.set_tag(Datadog::Ext::Integration::TAG_PEER_SERVICE, span.service)
             span.resource = payload[:consumer_class]
 
             # Set analytics sample rate

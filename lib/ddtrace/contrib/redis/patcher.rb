@@ -1,5 +1,6 @@
 require 'ddtrace/contrib/patcher'
 require 'ddtrace/contrib/redis/ext'
+require 'ddtrace/ext/integration'
 
 module Datadog
   module Contrib
@@ -38,6 +39,7 @@ module Datadog
               response = nil
               pin.tracer.trace(Datadog::Contrib::Redis::Ext::SPAN_COMMAND) do |span|
                 span.service = pin.service
+                span.set_tag(Datadog::Ext::Integration::TAG_PEER_SERVICE, span.service)
                 span.span_type = Datadog::Contrib::Redis::Ext::TYPE
                 span.resource = Datadog::Contrib::Redis::Quantize.format_command_args(*args)
                 Datadog::Contrib::Redis::Tags.set_common_tags(self, span)
@@ -57,6 +59,7 @@ module Datadog
               response = nil
               pin.tracer.trace(Datadog::Contrib::Redis::Ext::SPAN_COMMAND) do |span|
                 span.service = pin.service
+                span.set_tag(Datadog::Ext::Integration::TAG_PEER_SERVICE, span.service)
                 span.span_type = Datadog::Contrib::Redis::Ext::TYPE
                 commands = args[0].commands.map { |c| Datadog::Contrib::Redis::Quantize.format_command_args(c) }
                 span.resource = commands.join("\n")

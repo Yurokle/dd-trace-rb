@@ -72,6 +72,7 @@ module Datadog
             @datadog_span = datadog_configuration[:tracer].trace(
               Ext::SPAN_REQUEST,
               service: datadog_configuration[:service_name],
+              peer_service: datadog_configuration[:service_name],
               span_type: Datadog::Ext::HTTP::TYPE_OUTBOUND
             )
             @datadog_span.parent = parent_span unless parent_span.nil?

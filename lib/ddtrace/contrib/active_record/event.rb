@@ -13,7 +13,7 @@ module Datadog
         # Class methods for ActiveRecord events.
         module ClassMethods
           def span_options
-            { service: configuration[:service_name] }
+            { service: configuration[:service_name], peer_service: configuration[:service_name] } # TODO: better interface?
           end
 
           def tracer

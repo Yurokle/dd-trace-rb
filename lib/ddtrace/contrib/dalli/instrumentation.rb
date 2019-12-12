@@ -1,3 +1,4 @@
+require 'ddtrace/ext/integration'
 require 'ddtrace/ext/net'
 require 'ddtrace/contrib/analytics'
 require 'ddtrace/contrib/dalli/ext'
@@ -18,6 +19,7 @@ module Datadog
             tracer.trace(Datadog::Contrib::Dalli::Ext::SPAN_COMMAND) do |span|
               span.resource = op.to_s.upcase
               span.service = datadog_configuration[:service_name]
+              span.set_tag(Datadog::Ext::Integration::TAG_PEER_SERVICE, span.service)
               span.span_type = Datadog::Contrib::Dalli::Ext::SPAN_TYPE_COMMAND
 
               # Set analytics sample rate

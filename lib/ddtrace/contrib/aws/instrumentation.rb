@@ -1,5 +1,6 @@
 require 'ddtrace/contrib/analytics'
 require 'ddtrace/contrib/aws/ext'
+require 'ddtrace/ext/integration'
 
 module Datadog
   module Contrib
@@ -25,6 +26,7 @@ module Datadog
 
         def annotate!(span, context)
           span.service = configuration[:service_name]
+          span.set_tag(Datadog::Ext::Integration::TAG_PEER_SERVICE, span.service)
           span.span_type = Datadog::Ext::AppTypes::WEB
           span.name = Ext::SPAN_COMMAND
           span.resource = context.safely(:resource)
