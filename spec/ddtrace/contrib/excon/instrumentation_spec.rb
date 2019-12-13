@@ -247,6 +247,7 @@ RSpec.describe Datadog::Contrib::Excon::Middleware do
   end
 
   context 'global service name' do
+    subject(:get) { connection.get(path: '/success') }
     let(:service_name) { 'excon-global' }
 
     before(:each) do
@@ -258,7 +259,7 @@ RSpec.describe Datadog::Contrib::Excon::Middleware do
 
     it do
       Excon.stub({ method: :get, path: '/success' }, body: 'OK', status: 200)
-      connection.get(path: '/success')
+      subject
       expect(request_span.service).to eq(service_name)
     end
 
