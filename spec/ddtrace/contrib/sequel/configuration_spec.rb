@@ -1,3 +1,4 @@
+require 'ddtrace/contrib/integration_examples'
 require 'spec_helper'
 
 require 'time'
@@ -37,6 +38,8 @@ RSpec.describe 'Sequel configuration' do
           perform_query!
           expect(span.service).to eq('sqlite')
         end
+
+        it_behaves_like 'peer service'
       end
 
       context 'with options set via #use' do
@@ -47,6 +50,8 @@ RSpec.describe 'Sequel configuration' do
           perform_query!
           expect(span.service).to eq(service_name)
         end
+
+        it_behaves_like 'peer service'
       end
 
       context 'with options set on Sequel::Database' do
@@ -58,6 +63,8 @@ RSpec.describe 'Sequel configuration' do
           perform_query!
           expect(span.service).to eq(service_name)
         end
+
+        it_behaves_like 'peer service'
       end
 
       context 'after the database has been initialized' do
@@ -70,6 +77,8 @@ RSpec.describe 'Sequel configuration' do
           perform_query!
           expect(span.service).to eq('sqlite')
         end
+
+        it_behaves_like 'peer service'
       end
     end
   end

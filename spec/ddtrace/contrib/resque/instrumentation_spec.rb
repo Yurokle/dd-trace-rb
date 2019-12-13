@@ -1,3 +1,4 @@
+require 'ddtrace/contrib/integration_examples'
 require 'spec_helper'
 require 'ddtrace/contrib/analytics_examples'
 require_relative 'job'
@@ -53,6 +54,8 @@ RSpec.describe 'Resque instrumentation' do
         let(:analytics_enabled_var) { Datadog::Contrib::Resque::Ext::ENV_ANALYTICS_ENABLED }
         let(:analytics_sample_rate_var) { Datadog::Contrib::Resque::Ext::ENV_ANALYTICS_SAMPLE_RATE }
       end
+
+      it_behaves_like 'peer service'
     end
 
     context 'that fails' do
@@ -82,6 +85,8 @@ RSpec.describe 'Resque instrumentation' do
         expect(span).to have_error
         expect(span).to have_error_type(error_class_name)
       end
+
+      it_behaves_like 'peer service'
     end
   end
 

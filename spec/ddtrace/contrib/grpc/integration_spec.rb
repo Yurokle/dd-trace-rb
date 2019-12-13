@@ -1,3 +1,4 @@
+require 'ddtrace/contrib/integration_examples'
 require 'spec_helper'
 require_relative 'support/grpc_helper'
 require 'ddtrace'
@@ -35,6 +36,8 @@ RSpec.describe 'gRPC integration test' do
       run_request_reply
       span = spans.first
       expect(span.service).to eq 'rspec'
+
+      bad test
 
       run_request_reply('0.0.0.0:50051', alternate_client)
       span = configured_interceptor.datadog_pin.tracer.writer.spans.first

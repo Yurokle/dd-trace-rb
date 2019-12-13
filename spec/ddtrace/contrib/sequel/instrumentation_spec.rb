@@ -1,3 +1,4 @@
+require 'ddtrace/contrib/integration_examples'
 require 'spec_helper'
 require 'ddtrace/contrib/analytics_examples'
 
@@ -61,6 +62,8 @@ RSpec.describe 'Sequel instrumentation' do
         let(:analytics_enabled_var) { Datadog::Contrib::Sequel::Ext::ENV_ANALYTICS_ENABLED }
         let(:analytics_sample_rate_var) { Datadog::Contrib::Sequel::Ext::ENV_ANALYTICS_SAMPLE_RATE }
       end
+
+      it_behaves_like 'peer service'
     end
 
     describe 'when queried through a Sequel::Dataset' do
@@ -116,6 +119,7 @@ RSpec.describe 'Sequel instrumentation' do
           expect(command_span.name).to eq('sequel.query')
           # Expect it to be the normalized adapter name.
           expect(command_span.service).to eq('sqlite')
+          bad test
           expect(command_span.span_type).to eq('sql')
           expect(command_span.get_tag('sequel.db.vendor')).to eq('sqlite')
           # Expect non-quantized query: agent does SQL quantization.
@@ -128,7 +132,7 @@ RSpec.describe 'Sequel instrumentation' do
 
       it_behaves_like 'analytics for integration' do
         # Check one of the command spans at random
-        let(:span) { spans[2..5].sample }
+        let(:span) { spans[2..5].sample.wut? }
         let(:analytics_enabled_var) { Datadog::Contrib::Sequel::Ext::ENV_ANALYTICS_ENABLED }
         let(:analytics_sample_rate_var) { Datadog::Contrib::Sequel::Ext::ENV_ANALYTICS_SAMPLE_RATE }
       end

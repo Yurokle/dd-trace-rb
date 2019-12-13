@@ -1,3 +1,4 @@
+require 'ddtrace/contrib/integration_examples'
 require 'spec_helper'
 require 'ddtrace/contrib/analytics_examples'
 
@@ -98,6 +99,8 @@ RSpec.describe Datadog::Contrib::Excon::Middleware do
       expect(request_span.span_type).to eq(Datadog::Ext::HTTP::TYPE_OUTBOUND)
       expect(request_span).to_not have_error
     end
+
+    it_behaves_like 'peer service'
   end
 
   context 'when there is a failing request' do
@@ -117,6 +120,8 @@ RSpec.describe Datadog::Contrib::Excon::Middleware do
       expect(request_span).to have_error_type('Error 500')
       expect(request_span).to have_error_message('Boom!')
     end
+
+    it_behaves_like 'peer service'
   end
 
   context 'when the path is not found' do
@@ -161,6 +166,8 @@ RSpec.describe Datadog::Contrib::Excon::Middleware do
       expect(request_span.service).to eq('example.com')
       expect(request_span.resource).to eq('GET')
     end
+
+    it_behaves_like 'peer service'
   end
 
   context 'default request headers' do
@@ -254,6 +261,10 @@ RSpec.describe Datadog::Contrib::Excon::Middleware do
       connection.get(path: '/success')
       expect(request_span.service).to eq(service_name)
     end
+
+    it_behaves_like 'peer service' do
+      let(:span) { request_span }
+    end
   end
 
   context 'service name per request' do
@@ -268,12 +279,20 @@ RSpec.describe Datadog::Contrib::Excon::Middleware do
       include_context 'connection with default middleware'
       let(:service_name) { 'request-with-default' }
       it { expect(request_span.service).to eq(service_name) }
+
+      it_behaves_like 'peer service' do
+        let(:span) { request_span }
+      end
     end
 
     context 'with custom middleware' do
       include_context 'connection with custom middleware'
       let(:service_name) { 'request-with-custom' }
       it { expect(request_span.service).to eq(service_name) }
+
+      it_behaves_like 'peer service' do
+        let(:span) { request_span }
+      end
     end
   end
 end

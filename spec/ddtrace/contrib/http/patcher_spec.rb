@@ -1,3 +1,4 @@
+require 'ddtrace/contrib/integration_examples'
 require 'spec_helper'
 require 'ddtrace'
 require 'net/http'
@@ -28,6 +29,10 @@ RSpec.describe 'net/http patcher' do
 
       expect(request_span.service).to eq('net/http')
     end
+
+    it_behaves_like 'peer service' do
+      let(:span) { request_span }
+    end
   end
 
   describe 'with changed service name' do
@@ -45,6 +50,10 @@ RSpec.describe 'net/http patcher' do
       Net::HTTP.get(host, '/')
 
       expect(request_span.service).to eq(new_service_name)
+    end
+
+    it_behaves_like 'peer service' do
+      let(:service) { request_span }
     end
   end
 end

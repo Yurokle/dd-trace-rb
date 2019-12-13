@@ -1,3 +1,4 @@
+require 'ddtrace/contrib/integration_examples'
 require 'spec_helper'
 require 'ddtrace'
 require 'net/http'
@@ -67,6 +68,8 @@ RSpec.describe 'net/http miniapp tests' do
           expect(span.trace_id).to eq(trace_id)
         end
       end
+
+      it_behaves_like 'peer service'
     end
 
     context 'which use #get' do

@@ -1,3 +1,4 @@
+require 'ddtrace/contrib/integration_examples'
 require 'ddtrace/contrib/rails/rails_helper'
 
 RSpec.describe 'Rails database' do
@@ -38,6 +39,8 @@ RSpec.describe 'Rails database' do
       # ensure that the sql.query tag is not set
       expect(span.get_tag('sql.query')).to be_nil
     end
+
+    it_behaves_like 'peer service'
   end
 
   context 'on record creation' do
@@ -64,6 +67,8 @@ RSpec.describe 'Rails database' do
         expect(span.get_tag('active_record.instantiation.record_count')).to eq('1')
       end
 
+      it_behaves_like 'peer service'
+
       context 'inside parent trace' do
         subject! do
           tracer.trace('parent.span', service: 'parent-service') do
@@ -86,6 +91,8 @@ RSpec.describe 'Rails database' do
           expect(instantiation_span.get_tag('active_record.instantiation.class_name')).to eq('Article')
           expect(instantiation_span.get_tag('active_record.instantiation.record_count')).to eq('1')
         end
+
+        it_behaves_like 'peer service'
       end
     end
   end
@@ -113,5 +120,7 @@ RSpec.describe 'Rails database' do
 
       expect(span.service).to eq('customer-db')
     end
+
+    it_behaves_like 'peer service'
   end
 end

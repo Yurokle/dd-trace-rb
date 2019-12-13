@@ -1,3 +1,4 @@
+require 'ddtrace/contrib/integration_examples'
 require 'spec_helper'
 require 'ddtrace/contrib/analytics_examples'
 
@@ -68,6 +69,8 @@ RSpec.describe 'Mongo::Client instrumentation' do
         expect(spans).to have(1).items
         expect(spans.first.service).to eq(service)
       end
+
+      it_behaves_like 'peer service'
     end
 
     context 'to disable the tracer' do
@@ -97,6 +100,8 @@ RSpec.describe 'Mongo::Client instrumentation' do
         let(:analytics_enabled_var) { Datadog::Contrib::MongoDB::Ext::ENV_ANALYTICS_ENABLED }
         let(:analytics_sample_rate_var) { Datadog::Contrib::MongoDB::Ext::ENV_ANALYTICS_SAMPLE_RATE }
       end
+
+      it_behaves_like 'peer service'
     end
 
     # Expects every value (except for keys) to be quantized.
