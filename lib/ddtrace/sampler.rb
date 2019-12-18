@@ -1,6 +1,7 @@
 require 'forwardable'
 
 require 'ddtrace/ext/priority'
+require 'ddtrace/diagnostics/health'
 
 module Datadog
   # \Sampler performs client-side trace sampling.
@@ -47,7 +48,7 @@ module Datadog
     #   sampled.
     def initialize(sample_rate = 1.0)
       unless sample_rate > 0.0 && sample_rate <= 1.0
-        Datadog::Tracer.log.error('sample rate is not between 0 and 1, disabling the sampler')
+        Datadog::Logger.log.error('sample rate is not between 0 and 1, disabling the sampler')
         sample_rate = 1.0
       end
 
@@ -146,6 +147,10 @@ module Datadog
       end
     end
 
+    def length
+      @samplers.length
+    end
+
     private
 
     def set_rate(key, rate)
@@ -169,6 +174,9 @@ module Datadog
 
       # Update each service rate
       update_all(rate_by_service)
+
+      # Emit metric for service cache size
+      Diagnostics::Health.metrics.sampling_service_cache_length(length)
     end
 
     private

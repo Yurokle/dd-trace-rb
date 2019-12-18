@@ -5,7 +5,7 @@ job_defaults: &job_defaults
   working_directory: /app
   shell: /bin/bash --login
 
-test_containers: &test_containers
+test_containers:
   - &container_base
     environment:
       - BUNDLE_GEMFILE=/app/Gemfile
@@ -108,6 +108,10 @@ orbs:
           image:
             description: Docker image location
             type: string
+          rubocop:
+            description: Run Rubocop on this version of Ruby
+            type: boolean
+            default: true
         docker:
           - <<: *container_base
             image: <<parameters.image>>
@@ -126,6 +130,10 @@ orbs:
               keys:
                 - '{{ .Environment.CIRCLE_CACHE_VERSION }}-bundle-<<parameters.ruby_version>>-{{ checksum ".circleci/bundle_checksum" }}'
           - *step_bundle_install
+          - when:
+              condition: <<parameters.rubocop>>
+              steps:
+                - *step_rubocop
           - *step_appraisal_install
           - *step_compute_bundle_checksum
           - save_cache:
@@ -258,7 +266,7 @@ jobs:
           path: pkg/
           destination: gem
 
-job_configuration: &job_configuration
+job_configuration:
   - &config-2_0
     <<: *filters_all_branches_and_tags
     ruby_version: '2.0'
@@ -301,6 +309,7 @@ workflows:
           name: checkout-2.0
       - orb/build:
           <<: *config-2_0
+          rubocop: false
           name: build-2.0
           requires:
             - checkout-2.0
